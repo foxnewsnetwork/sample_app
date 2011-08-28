@@ -1,3 +1,8 @@
+# Ruby on Rails tutorial: sample app
+
+Here, I slowly build a basic webpage using ruby and rails.
+Hopefully by the end, I will be ready to expand this to have the features I need
+
 == Welcome to Rails
 
 Rails is a web-application framework that includes everything needed to create
