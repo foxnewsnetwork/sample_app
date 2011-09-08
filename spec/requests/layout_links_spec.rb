@@ -1,15 +1,16 @@
 require 'spec_helper'
 
 describe "LayoutLinks" do
-  describe "GET /layout_links" do
-    it "works! (now write some real specs)" do
-      get layout_links_path
-    end
-  end
+
+#  describe "GET /layout_links" do
+#    it "works! (now write some real specs)" do
+#      get layout_links_path
+#    end
+#  end
   
   it "should have a home page at '/'" do
-    get '/contact'
-    response.should have_selector( 'title' , :content => 'Contact' )
+    get '/'
+    response.should have_selector( 'title' , :content => 'Home' )
   end
   
   it "should have an about page at '/about'" do
@@ -25,4 +26,6 @@ describe "LayoutLinks" do
   it "should have a contact page at '/contact'" do
     get '/contact'
     response.should have_selector( 'title' , :content => 'Contact' )
+  end
+  
 end
