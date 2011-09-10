@@ -4,7 +4,7 @@ describe PagesController do
   render_views
 
 	before(:each) do
-		@base_title = "Ruby on Rails Tutorial Sample App "
+		@base_title = "CoTABit "
 	end
 
   describe "GET 'home'" do
@@ -50,5 +50,6 @@ describe PagesController do
 			response.should have_selector( "title" , :content => @base_title + "| Help" )
 		end
 	end
+	
 
 end
