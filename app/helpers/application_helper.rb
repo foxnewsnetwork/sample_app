@@ -16,6 +16,10 @@ module ApplicationHelper
   def help_path
     return '/help'
   end
+  
+  def sign_up_path
+    return '/signup'
+  end
   	
 	# Deals with the title for a page to be honest, I have no clue how it works
 	def title
