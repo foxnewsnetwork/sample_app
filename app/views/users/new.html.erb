@@ -1,2 +1,24 @@
-<h1>Users#new</h1>
-<p>Sign up for an new account</p>
+<h1>Sign up</h1>
+
+<%= form_for(@user) do |f| %>
+  <%= render 'shared/error_messages' %>
+  <div class="field">
+    <%= f.label :username , "Username" %><br />
+    <%= f.text_field :username %>
+  </div>
+  <div class="field">
+    <%= f.label :email , "Email" %><br />
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :password , "Password" %><br />
+    <%= f.password_field :password %>
+  </div>
+  <div class="field">
+    <%= f.label :password_confirmation , "Confirmation" %><br />
+    <%= f.password_field :password_confirmation %>
+  </div>
+  <div class="action">
+    <%= f.submit "Sign up" %>
+  </div>
+<% end %>

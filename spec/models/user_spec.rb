@@ -114,5 +114,7 @@ describe User do
         result.should == @myuser
       end
     end
+    
+    
   end
 end
