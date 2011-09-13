@@ -21,6 +21,30 @@ describe "Users" do
           end.should_not change( User, :count )
         end
         
+        it "should clear the password fields after a fail attempt" do
+          visit signup_path
+          fill_in "Username" , :with => ''
+          fill_in "Email" , :with => ''
+          fill_in "Password" , :with => 'shouldbegone'
+          fill_in "Confirmation" , :with => 'shouldbegone'
+          click_button
+          response.should render_template( 'users/new' )
+          response.should have_selector("input[name='user[password]'][type='password']" , 
+                                        :value => '')
+        end
+        
+        it "should clear the confirmation field after a fail attempt" do
+          visit signup_path
+          fill_in "Username" , :with => ''
+          fill_in "Email" , :with => ''
+          fill_in "Password" , :with => 'shouldbegone'
+          fill_in "Confirmation" , :with => 'shouldbegone'
+          click_button
+          response.should render_template( 'users/new' )
+          response.should have_selector("input[name='user[password_confirmation]'][type='password']" , :value => '')
+        end
+        
+        
       end
       
       describe "success" do

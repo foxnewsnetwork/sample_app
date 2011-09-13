@@ -15,6 +15,26 @@ describe UsersController do
       response.should be_success
     end
     
+    it "should have the username field" do
+      get 'new'
+      response.should have_selector( "input[name='user[username]'][type='text']" )
+    end
+    
+    it "should have the email field" do
+      get 'new'
+      response.should have_selector("input[name='user[email]'][type='text']")
+    end
+    
+    it "should have the password field" do
+      get 'new'
+      response.should have_selector("input[name='user[password]'][type='password']")
+    end
+    
+    it "should have the confirmation field" do
+      get 'new'
+      response.should have_selector("input[name='user[password_confirmation]'][type='password']")
+    end
+    
     describe "Post 'create'" do
       
       describe "failure" do
