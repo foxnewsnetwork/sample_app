@@ -1,6 +1,6 @@
 module ApplicationHelper
 	
-	# Declaring some variables
+	# Declaring some variables. As it turns out, these may not be needed
 	def about_path
 	  return '/about'
 	end
@@ -33,6 +33,10 @@ module ApplicationHelper
 		else
 			return "#{base_title} | #{@title}"
 		end
+	end
+	
+	def logo
+	  image_tag("logo.png", :alt => "Sample App", :class => "round")
 	end
 	
 	# Ideally puts stuff into the <nav> tags on the application page
