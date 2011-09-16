@@ -33,15 +33,28 @@ describe UsersController do
     describe "as an admin user" do
       
       before(:each) do
-        admin = Factory(:user, :email => "admin@admin.admin")
-        admin.toggle(:admin)
-        test_sign_in(admin)
+        @admin = Factory(:user, :email => "admin@admin.admin")
+        @admin.toggle(:admin)
+        test_sign_in(@admin)
       end
       
       it "should destroy the user" do
         lambda do
           delete :destroy, :id => @user
         end.should change(User, :count).by(-1)
+      end
+      
+      it "should let not admins destroy themselves" do
+        lambda do
+          delete :destroy , :id => @admin
+        end.should_not change(User, :count)
+        
+      end
+      
+      it "should give admins a nice warning if they try to delete themselves" do
+        delete :destroy, :id => @admin
+        response.should redirect_to(users_path)
+        flash[:error].should =~ /cannot delete/i
       end
       
       it "should redirect to the users page" do
@@ -79,6 +92,11 @@ describe UsersController do
       it "should be successful" do
         get :index
         response.should be_success
+      end
+      
+      it "should not have those links to delete other users" do
+        get :index
+        response.should_not have_selector("a" , :title => "delete")
       end
       
       it "should have the right title" do
@@ -346,5 +364,6 @@ describe UsersController do
       get :show, :id => @user.id
       response.should have_selector( "h1>img" , :class => "gravatar" )
     end
+    
   end
 end
