@@ -8,6 +8,145 @@ describe UsersController do
     @base_title = "CoTABit "
   end
   
+  describe "DELETE 'destroy'" do
+    
+    before(:each) do
+      @user = Factory(:user)
+    end
+    
+    describe "as a non-signed-in user" do
+      
+      it "should protect the page" do
+        delete :destroy, :id => @user
+        response.should redirect_to(signin_path)
+      end
+    end
+    
+    describe "as a non-admin user" do
+      it "should protect the page" do
+        test_sign_in(@user)
+        delete :destroy, :id => @user
+        response.should redirect_to(root_path)
+      end
+    end
+    
+    describe "as an admin user" do
+      
+      before(:each) do
+        admin = Factory(:user, :email => "admin@admin.admin")
+        admin.toggle(:admin)
+        test_sign_in(admin)
+      end
+      
+      it "should destroy the user" do
+        lambda do
+          delete :destroy, :id => @user
+        end.should change(User, :count).by(-1)
+      end
+      
+      it "should redirect to the users page" do
+        delete :destroy, :id => @user
+        response.should redirect_to(users_path)
+      end
+    end
+  end
+  
+  describe "GET 'index'" do
+    
+    describe "for non-signed-in-users" do
+    
+      it "should deny access" do
+        get :index
+        response.should redirect_to(signin_path)
+        flash[:notice].should =~ /sign in/i
+      end
+    
+    end
+    
+    describe "for signed-in users" do
+      
+      before(:each) do
+        @user = test_sign_in(Factory(:user))
+        second = Factory(:user, :username => "bob", :email => "c@d.com")
+        third = Factory(:user, :username => "ben", :email => "e@f.com")
+        @users = [@user , second , third]
+        
+        30.times do |n|
+          @users << Factory(:user, :email => Factory.next(:email))
+        end
+      end
+      
+      it "should be successful" do
+        get :index
+        response.should be_success
+      end
+      
+      it "should have the right title" do
+        get :index
+        response.should have_selector("title", :content => "All users")
+      end
+      
+      it "should have an element for each user" do
+        get :index
+        @users[0..2].each do |user|
+          response.should have_selector("li", :content => user.username)
+        end
+      end
+      
+      it "should paginate users" do
+        get :index
+        response.should have_selector("div.pagination")
+        response.should have_selector("span.disabled", :content => "Previous")
+        response.should have_selector("a" , :href => "/users?page=2" ,
+                                            :content => "2")
+        response.should have_selector("a" , :href => "/users?page=2" ,
+                                            :content => "Next")
+      end
+      
+    end
+  end
+  
+  describe "authentication of edit/update pages" do
+    
+    before(:each) do
+      @user = Factory(:user)
+    end
+    
+    describe "for non-signed-in-users" do
+    
+      it "should deny access to 'edit'" do
+        get :edit , :id => @user.id
+        response.should redirect_to(signin_path)
+      end
+      
+      it "should deny access to 'update'" do
+        get :update, :id => @user.id, :user => {}
+        response.should redirect_to(signin_path)
+      end
+      
+    end
+    
+    describe "for signed in users" do
+    
+      before(:each) do
+        wrong_user = Factory(:user , :email => "user@example.net")
+        test_sign_in(wrong_user)
+      end
+      
+      it "should require matching user for 'edit'" do
+        get :edit , :id => @user.id
+        response.should redirect_to(root_path)
+      end
+      
+      it "should require matching users for update" do
+        put :update , :id => @user.id , :user => { }
+        response.should redirect_to(root_path)
+      end
+    
+    end
+    
+  end
+  
   describe "PUT 'update'" do
     
     before(:each) do
@@ -31,12 +170,13 @@ describe UsersController do
         put :update, :id => @user.id, :user => @attr
         response.should have_selector("title", :content => 'Edit user')
       end
+      
     end
     
     describe "success" do
       
       before(:each) do
-        @attr = { :username => "new name" , :email => "user@example.org" ,
+        @attr = { :username => "new name" , :email => "user@eo.org" ,
         :password => "boobs" , :password_confirmation => "boobs" }
       end
       
@@ -56,7 +196,9 @@ describe UsersController do
         put :update, :id => @user.id , :user => @attr
         flash[:success].should =~ /updated/i
       end
+    
     end
+    
   end
   
   describe "GET 'edit'" do
@@ -143,7 +285,7 @@ describe UsersController do
         before(:each) do
           @attr3 = { 
                     :username => 'New User' ,
-                    :email => 'user@example.com' ,
+                    :email => 'user@exame.com' ,
                     :password => 'validpassword' ,
                     :password_confirmation => 'validpassword' 
                     }
