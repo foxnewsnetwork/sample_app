@@ -7,6 +7,82 @@ describe UsersController do
   before( :each ) do
     @base_title = "CoTABit "
   end
+  
+  describe "PUT 'update'" do
+    
+    before(:each) do
+      @user = Factory(:user)
+      test_sign_in(@user)
+    end
+    
+    describe "failure" do
+      
+      before(:each) do
+        @attr = { :email => "" , :username => "" , :password => "" , 
+        :password_confirmation => "" }
+      end
+      
+      it "should render the 'edit' page" do
+        put :update, :id => @user.id, :user => @attr
+        response.should render_template('edit')
+      end
+      
+      it "should have the right title" do
+        put :update, :id => @user.id, :user => @attr
+        response.should have_selector("title", :content => 'Edit user')
+      end
+    end
+    
+    describe "success" do
+      
+      before(:each) do
+        @attr = { :username => "new name" , :email => "user@example.org" ,
+        :password => "boobs" , :password_confirmation => "boobs" }
+      end
+      
+      it "should change the user's attributes" do
+        put :update, :id => @user.id, :user => @attr
+        @user.reload
+        @user.username.should == @attr[:username]
+        @user.email.should == @attr[:email]
+      end
+      
+      it "should redirect to the user show page" do
+        put :update, :id => @user.id, :user => @attr
+        response.should redirect_to(user_path(@user))
+      end
+      
+      it "should have a flash message" do
+        put :update, :id => @user.id , :user => @attr
+        flash[:success].should =~ /updated/i
+      end
+    end
+  end
+  
+  describe "GET 'edit'" do
+  
+    before(:each) do
+      @user = Factory(:user)
+      test_sign_in(@user)
+    end
+    
+    it "should be successful" do
+      get :edit, :id => @user.id
+      response.should be_success
+    end
+    
+    it "should have the right title" do
+      get :edit, :id => @user.id
+      response.should have_selector("title" , :content => "Edit user")
+    end
+    
+    it "should have a link to change the Gravatar" do
+      get :edit, :id => @user
+      gravatar_url = "http://gravatar.com/emails"
+      response.should have_selector('a' , :href => gravatar_url , 
+                                          :content => "change")
+    end
+  end
 
   describe "GET 'new'" do
   
@@ -27,7 +103,7 @@ describe UsersController do
     
     it "should have the password field" do
       get 'new'
-      response.should have_selector("input[name='user[password]'][type='password']")
+      response.should have_selector( "input[name='user[password]'][type='password']")
     end
     
     it "should have the confirmation field" do
