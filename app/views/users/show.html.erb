@@ -6,10 +6,20 @@
         <%= gravatar_for @user, :size => 30 %>
         <%= @user.username %>
       </h1>
+      
+      <% unless @user.macroposts.empty? %>
+        <table class="macroposts" summary="User macroposts">
+          <% @macroposts.each do |mp| %>
+            <%= render mp %>
+          <% end %>
+        </table>
+        <%= will_paginate @macroposts %>
+      <% end %>
     </td>
     <td class="sidebar round" >
       <strong>Name: </strong><%= @user.username %><br />
       <strong>URL: </strong><%= link_to user_path(@user) , user_path(@user) %>
+      <strong>Macroposts: </strong><%= @user.macroposts.count %>
     </td>
   </tr>
 </table>

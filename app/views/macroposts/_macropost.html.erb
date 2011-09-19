@@ -1,0 +1,12 @@
+<tr>
+  <td class="macropost">
+    <span class="title"><%= macropost.title %></span>
+    <span class="content"><%= macropost.content %></span>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(macropost.created_at) %> ago.
+    </span>
+    <span class="location">
+      On board <%= macropost.location_id %>
+    </span>
+  </td>
+</tr>

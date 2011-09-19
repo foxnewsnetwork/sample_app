@@ -11,7 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110916160217) do
+ActiveRecord::Schema.define(:version => 20110916185519) do
+
+  create_table "macroposts", :force => true do |t|
+    t.text     "content"
+    t.integer  "user_id"
+    t.integer  "location_id"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "macroposts", ["created_at"], :name => "index_macroposts_on_created_at"
+  add_index "macroposts", ["location_id"], :name => "index_macroposts_on_location_id"
+  add_index "macroposts", ["user_id"], :name => "index_macroposts_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "username"

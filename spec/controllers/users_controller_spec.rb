@@ -340,6 +340,22 @@ describe UsersController do
       @user = Factory(:user)
     end
     
+    it "should show the user's macroposts" do
+      mp1 = Factory(:macropost, :user => @user, 
+                    :content => "foobar" ,
+                    :title => "titbar" ,
+                    :location_id => 0 )
+      mp2 = Factory(:macropost, :user => @user, 
+                    :content => "2 foobar" ,
+                    :title => "titbar" ,
+                    :location_id => 0 )
+      get :show, :id => @user.id
+      response.should have_selector("span.content", :content => mp1.content)
+      response.should have_selector("span.content", :content => mp2.content)
+      response.should have_selector("span.title", :content => mp1.title)
+      response.should have_selector("span.title", :content => mp2.title)
+    end
+    
     it "should be successful" do
       get :show, :id => @user.id
       response.should be_success

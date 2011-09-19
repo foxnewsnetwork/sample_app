@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   attr_accessor :password
   attr_accessible :username, :email , :password , :password_confirmation
   
+  has_many :macroposts, :dependent => :destroy, :order => 'created_at DESC'
+  
   email_regex = /\A[a-zA-Z0-9_.-]{1,}@[a-zA-Z0-9_.-]{1,}\.[a-zA-Z]{2,}\z/i
   validates :username , :presence => true ,
                         :length => { :maximum => 64 }

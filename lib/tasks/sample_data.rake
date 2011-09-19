@@ -16,5 +16,13 @@ namespace :db do
                   :password => password ,
                   :password_confirmation => password)
     end
+    
+    50.times do
+      User.all(:limit => 6).each do |user|
+        user.macroposts.create!(:title => Faker::Lorem.sentence(2) ,
+                                :content => Faker::Lorem.sentence(5) ,
+                                :location_id => 1 )
+      end
+    end
   end
 end

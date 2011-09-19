@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'factories'
 
 describe User do
   
@@ -8,6 +9,30 @@ describe User do
               :password => 'jackass' ,
               :password_confirmation => 'jackass' 
             }
+  end
+  
+    
+  
+  describe "macropost associations" do
+    before(:each) do
+      @user = User.create(@attr)
+      @mp1 = Factory(:macropost, :user => @user, :created_at => 1.day.ago)
+      @mp2 = Factory(:macropost, :user => @user, :created_at => 1.hour.ago)
+    end
+    
+    it "should destroy associated macroposts" do
+      @user.destroy
+      [@mp1, @mp2].each do | u |
+        Macropost.find_by_id(u.id).should be_nil
+      end
+    end
+    it "should havce a macroposts attribute" do
+      @user.should respond_to(:macroposts)
+    end
+    
+    it "should have the right macropost in the right order" do
+      @user.macroposts.should == [@mp2, @mp1]
+    end
   end
   
   it "should create a new instance given valid attributes" do
