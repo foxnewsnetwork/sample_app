@@ -3,7 +3,8 @@ SampleApp::Application.routes.draw do
 
   resources :users
   resources :sessions , :only => [ :create, :new, :destroy ]
-
+  resources :macroposts, :only => [ :create, :destroy ]
+  
   match '/contact' , :to => 'pages#contact' 
   match '/about' , :to => 'pages#about' 
   match '/help' , :to => 'pages#help' 

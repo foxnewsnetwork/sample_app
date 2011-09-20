@@ -19,6 +19,10 @@ class User < ActiveRecord::Base
                         
   before_save :encrypt_password
   
+  def feed
+    Macropost.where("user_id = ?", id).order("created_at DESC")
+  end
+  
   def has_password?(submitted_password)
     return self.encrypted_password == encrypt(submitted_password)
   end
